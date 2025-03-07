@@ -1,21 +1,47 @@
 # Pod1
 
-**TODO: Add description**
+POC of an elixir application in a clusterized setting using libcluster to
+discover and talk to other nodes and `horde` to share processes among them.
 
-## Installation
+## Installation / Usage
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `pod1` to your list of dependencies in `mix.exs`:
-
-```elixir
-def deps do
-  [
-    {:pod1, "~> 0.1.0"}
-  ]
-end
+``` sh
+mix deps.get
+mix compile
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at <https://hexdocs.pm/pod1>.
+In two different terminals run
 
+``` sh
+iex --sname n1 -S mix
+```
+
+``` sh
+iex --sname n2 -S mix
+```
+
+Now you can increment the counter in one node and see it in the other!
+
+``` sh
+# Node 1
+iex(n1@lHost)1> Pos1.Counter.count()
+# 0
+```
+
+``` sh
+# Node 2
+iex(n1@lHost)1> Pos1.Counter.count()
+# 0
+iex(n1@lHost)1> Pos1.Counter.inc()
+# :ok
+iex(n1@lHost)1> Pos1.Counter.inc()
+# :ok
+iex(n1@lHost)1> Pos1.Counter.inc()
+# :ok
+```
+
+``` sh
+# Node 1
+iex(n1@lHost)1> Pos1.Counter.count()
+# 3
+```
