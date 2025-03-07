@@ -7,9 +7,16 @@ defmodule Pod1.Application do
 
   @impl true
   def start(_type, _args) do
+    topology = [
+      gossip: [
+        strategy: Cluster.Strategy.Gossip
+      ]
+    ]
+
     children = [
-      # Starts a worker by calling: Pod1.Worker.start_link(arg)
-      # {Pod1.Worker, arg}
+      {Cluster.Supervisor, [topology, [name: Pod1.Cluster.Supervisor]]},
+      {Horde.Registry, [keys: :unique, name: Pod1.Registry, members: :auto]},
+      Pod1.Counter.Supervisor
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
